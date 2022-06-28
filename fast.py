@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from select import select
 import sys
 import time
 from collections import OrderedDict, defaultdict
@@ -10,7 +11,7 @@ from tokenize import group
 import lsh
 
 
-def loadTestSuite(input_file, bbox=True, k=0, requests_type="b_requests"):
+def loadTestSuite(input_file, bbox=True, k=0):
     """Read the file and prints the feature set of the file
 
     Args:
@@ -30,7 +31,12 @@ def loadTestSuite(input_file, bbox=True, k=0, requests_type="b_requests"):
             with open(tc) as f:
                 if bbox:
                     load_dict = json.load(f)
-                    TS[tcID] = set(load_dict[requests_type])
+                    requests = set()
+                    for request in load_dict["b_requests"]:
+                        requests.add("b_requests"+request)
+                    for request in load_dict["c_requests"]:
+                        requests.add("c_requests"+request)
+                    TS[tcID] = requests
                     FM[tcID] = tc
                 # TODO white box
                 else:
@@ -87,7 +93,7 @@ def loadSignatures(input_file):
 
 
 # lsh + pairwise comparison with candidate set
-def fast_pw(input_file,limit=0.95, r=100, b=1, bbox=True, k=0):
+def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     """INPUT
     (str)input_file: path of input file
     (int)r: number of rows
@@ -98,6 +104,7 @@ def fast_pw(input_file,limit=0.95, r=100, b=1, bbox=True, k=0):
     OUTPUT
     (list)P: prioritized test suite
     """
+    maxJaccardDistance = 1 - minJaccardSimilarty
     # number of hash functions
     n = r * b  
     
@@ -106,6 +113,7 @@ def fast_pw(input_file,limit=0.95, r=100, b=1, bbox=True, k=0):
 
     # generate feature set of each file
     test_suite, file_name_map = loadTestSuite(input_file, bbox=bbox, k=k) 
+    # print(file_name_map)
     # generate minhashes signatures
     mh_t = time.process_time()
     tcs_minhashes = {tc[0]: lsh.tcMinhashing(tc, hashes)
@@ -118,76 +126,94 @@ def fast_pw(input_file,limit=0.95, r=100, b=1, bbox=True, k=0):
     # get the ID of test cases
     tcs = set(tcs_minhashes.keys())
 
-    BASE = 0.5
-    SIZE = int(len(tcs)*BASE) + 1
+    # BASE = 0.5
+    # SIZE = int(len(tcs)*BASE) + 1
 
     # Locality-Sensitive Hashing (LSH)
-    bucket = lsh.LSHBucket(tcs_minhashes.items(), b, r, n)
+    # bucket = lsh.LSHBucket(tcs_minhashes.items(), b, r, n)
     # print(bucket)
 
     # store the results
     group_tcs = list()
-    prioritized_tcs = list()
-    prioritized_tcs_name = list()
+    # prioritized_tcs = [0]
+    tmp_group = list()
 
     # First TC
-    selected_tcs_minhash = lsh.tcMinhashing((0, set()), hashes)
-    first_tc = random.choice(tcs_minhashes.keys())
-    for i in range(n):
-        if tcs_minhashes[first_tc][i] < selected_tcs_minhash[i]:
-            selected_tcs_minhash[i] = tcs_minhashes[first_tc][i]
-    prioritized_tcs.append(first_tc)
-    prioritized_tcs_name.append(file_name_map[first_tc])
-    tcs -= set([first_tc])
-    del tcs_minhashes[first_tc]
+    # selected_tcs_minhash = lsh.tcMinhashing((0, set()), hashes)
+    selected_tc = random.choice(tcs_minhashes.keys())
+    selected_tcs_minhash = tcs_minhashes[selected_tc]
+    # for i in range(n):
+    #     if tcs_minhashes[first_tc][i] < selected_tcs_minhash[i]:
+    #         selected_tcs_minhash[i] = tcs_minhashes[first_tc][i]
+    # prioritized_tcs.append(first_tc)
+    tmp_group.append(file_name_map[selected_tc])
+    tcs -= set([selected_tc])
+    del tcs_minhashes[selected_tc]
 
-    iteration, total = 0, float(len(tcs_minhashes))
     while len(tcs_minhashes) > 0:
-        iteration += 1
-        if iteration % 100 == 0:
-            sys.stdout.write("Progress: {}%\r".format(
-                round(100*iteration/total, 2)))
-            sys.stdout.flush()
-
-        if len(tcs_minhashes) < SIZE:
-            bucket = lsh.LSHBucket(tcs_minhashes.items(), b, r, n)
-            SIZE = int(SIZE*BASE) + 1
-
-        sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
-                                     b, r, n)
-        filtered_sim_cand = sim_cand.difference(prioritized_tcs)
-        candidates = tcs - filtered_sim_cand
-        # print(prioritized_tcs)
-        # print(candidates)
-
-        if len(candidates) == 0:
-            selected_tcs_minhash = lsh.tcMinhashing((0, set()), hashes)
-            sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
-                                         b, r, n)
-            filtered_sim_cand = sim_cand.difference(prioritized_tcs)
-            candidates = tcs - filtered_sim_cand
-            if len(candidates) == 0:
-                candidates = tcs_minhashes.keys()
-
-        selected_tc, min_dist = random.choice(tuple(candidates)), sys.maxsize
+        min_dist = sys.maxsize
         for candidate in tcs_minhashes:
-            if candidate in candidates:
-                dist = lsh.jDistanceEstimate(
+            dist = lsh.jDistanceEstimate(
                     selected_tcs_minhash, tcs_minhashes[candidate])
-                if dist < min_dist:
-                    selected_tc, min_dist = candidate, dist
-
-        for i in range(n):
-            if tcs_minhashes[selected_tc][i] < selected_tcs_minhash[i]:
-                selected_tcs_minhash[i] = tcs_minhashes[selected_tc][i]
-        if min_dist > 1-limit:
-            group_tcs.append(prioritized_tcs_name[:])
-            prioritized_tcs_name.clear()
-        prioritized_tcs.append(selected_tc)
-        prioritized_tcs_name.append(file_name_map[selected_tc])
+            if dist < min_dist:
+                selected_tc, min_dist = candidate, dist
+                
+        selected_tcs_minhash = tcs_minhashes[selected_tc]  
         tcs -= set([selected_tc])
         del tcs_minhashes[selected_tc]
-    group_tcs.append(prioritized_tcs_name[:])
+        
+        if min_dist > maxJaccardDistance:
+            group_tcs.append(tmp_group[:])
+            tmp_group.clear()
+        tmp_group.append(file_name_map[selected_tc])
+
+    # iteration, total = 0, float(len(tcs_minhashes))
+    # while len(tcs_minhashes) > 0:
+    #     iteration += 1
+    #     if iteration % 100 == 0:
+    #         sys.stdout.write("Progress: {}%\r".format(
+    #             round(100*iteration/total, 2)))
+    #         sys.stdout.flush()
+
+    #     if len(tcs_minhashes) < SIZE:
+    #         bucket = lsh.LSHBucket(tcs_minhashes.items(), b, r, n)
+    #         SIZE = int(SIZE*BASE) + 1
+
+    #     sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
+    #                                  b, r, n)
+    #     candidates = sim_cand.difference(prioritized_tcs)
+    #     # candidates = tcs - filtered_sim_cand
+
+    #     if len(candidates) == 0:
+    #         selected_tcs_minhash = lsh.tcMinhashing((0, set()), hashes)
+    #         sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
+    #                                      b, r, n)
+    #         candidates = sim_cand.difference(prioritized_tcs)
+    #         # candidates = tcs - filtered_sim_cand
+    #         if len(candidates) == 0:
+    #             candidates = tcs_minhashes.keys()
+
+    #     selected_tc, min_dist = random.choice(tuple(candidates)), sys.maxsize
+    #     #for candidate in tcs_minhashes:
+    #     for candidate in candidates:
+    #         dist = lsh.jDistanceEstimate(
+    #             selected_tcs_minhash, tcs_minhashes[candidate])
+    #         if dist < min_dist:
+    #             selected_tc, min_dist = candidate, dist
+
+    #     for i in range(n):
+    #         if tcs_minhashes[selected_tc][i] < selected_tcs_minhash[i]:
+    #             selected_tcs_minhash[i] = tcs_minhashes[selected_tc][i]
+    #     print(file_name_map[selected_tc])
+    #     print(min_dist)
+    #     if min_dist > maxJaccardDistance:
+    #         group_tcs.append(prioritized_tcs_name[:])
+    #         prioritized_tcs_name.clear()
+    #     prioritized_tcs.append(selected_tc)
+    #     prioritized_tcs_name.append(file_name_map[selected_tc])
+    #     tcs -= set([selected_tc])
+    #     del tcs_minhashes[selected_tc]
+    group_tcs.append(tmp_group[:])
     ptime = time.process_time() - ptime_start
     print("prioritize time: {}".format(ptime))
     return mh_time, ptime, group_tcs

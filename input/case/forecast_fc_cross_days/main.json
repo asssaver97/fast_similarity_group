@@ -1,0 +1,77 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "api_type": "af",
+  "application": null,
+  "asset_ack": "5:5",
+  "b_requests": [],
+  "base_file_name": "fc_cross_days.log",
+  "base_sql": "forecast_base.sql",
+  "c_requests": [
+    "forecast_fc_cross_days_asset1.xml",
+    "forecast_fc_cross_days_asset2.xml",
+    "forecast_fc_cross_days_asset3.xml",
+    "forecast_fc_cross_days_asset4_ssus.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": false,
+  "cookie": "",
+  "creator": "yzhao",
+  "delta_sql": "",
+  "description": "1. frequency cap cross day. 2. SSUS request",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": "fc_cross_days_forecast.log",
+  "fm_requests": [
+    {
+      "header": "X-FW-Overrides:Request-Time=1318204800",
+      "user_agent": "freewheel",
+      "xml": "forecast_fc_cross_days_asset1.xml"
+    },
+    {
+      "header": "X-FW-Overrides:Request-Time=1318204800",
+      "user_agent": "freewheel",
+      "xml": "forecast_fc_cross_days_asset2.xml"
+    },
+    {
+      "header": "X-FW-Overrides:Request-Time=1318204800",
+      "user_agent": "freewheel",
+      "xml": "forecast_fc_cross_days_asset3.xml"
+    },
+    {
+      "header": "X-FW-Overrides:Request-Time=1318204800",
+      "user_agent": "freewheel",
+      "xml": "forecast_fc_cross_days_asset4_ssus.xml"
+    }
+  ],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": "ads-forecast-migrated.conf",
+  "groups": [
+    "migrated"
+  ],
+  "meta_data": "forecast_fc_cross_days",
+  "metrics": "0",
+  "migrated": true,
+  "mode": "ALL",
+  "name": "forecast_fc_cross_days",
+  "override_header": "-1",
+  "owner": "yzhao",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "forecast",
+  "sql": "forecast_fc_cross_days.sql",
+  "start_memcached": false,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2022-04-18 18:00:00 +0000",
+  "wiki": "http://wiki.dev.fwmrm.net/display/ForecastPortal/Forecasting+Test+Design+OPP-152+Support+Frequency+Caps+Across+Multiple+Days+for+Forecasting"
+}

@@ -1,0 +1,63 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [
+    "Client_SourceIP: [192.168.0.31]"
+  ],
+  "ads_slot_impression": "",
+  "api_type": null,
+  "application": "6.4.0",
+  "asset_ack": "5:5",
+  "b_requests": [
+    "hhid_freq_cap_hhid_only_typeb.xml"
+  ],
+  "base_file_name": "hhid_freq_cap_hhid_only_fc.log",
+  "base_sql": "initial-data.sql",
+  "c_requests": [
+    "typeCseq_301_hhid_freq_cap_hhid_only_1.xml",
+    "typeCseq_302_hhid_freq_cap_hhid_only_2.xml",
+    "typeCseq_303_hhid_freq_cap_hhid_only_3.xml",
+    "typeCseq_304_hhid_freq_cap_hhid_only_4.xml",
+    "typeCseq_501_hhid_freq_cap_hhid_only_5.xml",
+    "typeCseq_502_hhid_freq_cap_hhid_only_6.xml",
+    "typeCseq_503_hhid_freq_cap_hhid_only_7.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "xyzhang",
+  "delta_sql": null,
+  "description": "HHID frequency cap - HHID only",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": null,
+  "fm_requests": [],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": null,
+  "groups": [
+    "MRM-CORE - freq_cap"
+  ],
+  "meta_data": null,
+  "metrics": "0",
+  "migrated": false,
+  "mode": "ALL",
+  "name": "hhid_freq_cap_hhid_only_fc",
+  "override_header": "-1",
+  "owner": "xyzhang",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr_fc.conf",
+  "service": "freq_cap",
+  "sql": "hhid_freq_cap_hhid_only.sql",
+  "start_memcached": false,
+  "status": "inactive",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2020-10-17 11:43:38 +0000",
+  "wiki": "https://wiki.freewheel.tv/x/H3mzBw"
+}

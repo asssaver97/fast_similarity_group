@@ -1,0 +1,49 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "application": "6.50.0",
+  "asset_ack": "5:5",
+  "b_requests": [
+    ""
+  ],
+  "base_file_name": "FW-98289.log",
+  "base_sql": "initial-mkpl-data.sql",
+  "c_requests": [
+    "typeCseq_100_FW-98289.xml",
+    "typeCseq_101_FW-98289.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "dsli",
+  "description": "MME - Above paying ads priority override support",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "groups": [
+    "MKPL-Programmatic",
+    "MKPL-PG-TD"
+  ],
+  "metrics": "0",
+  "mode": "ALL",
+  "name": "FW-98289",
+  "override_header": "-1",
+  "owner": "dsli",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "FW-98289.sql",
+  "start_memcached": false,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "migrated": false,
+  "updated_at": "2022-06-16 05:34:27 +0000",
+  "wiki": "https://wiki.freewheel.tv/pages/viewpage.action?pageId=289178399"
+}

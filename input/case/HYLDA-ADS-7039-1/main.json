@@ -1,0 +1,64 @@
+{
+  "active_asset_list": null,
+  "active_site_section_list": null,
+  "addon_headers": [
+    "X-FW-Reuse-Response: true"
+  ],
+  "ads_slot_impression": "",
+  "api_type": null,
+  "application": "6.12.0",
+  "asset_ack": "5:5",
+  "b_requests": [
+    "HYLDA7039_typeB_1.xml",
+    "HYLDA7039_typeB_2.xml",
+    "HYLDA7039_typeB_3.xml"
+  ],
+  "base_file_name": "HYLDA-ADS-7039-1.log",
+  "base_sql": "initial-data.sql",
+  "c_requests": [
+    "HYLDA7039_1.xml",
+    "HYLDA7039_2.xml"
+  ],
+  "cmp_resp_headers": [
+    "X-FW-Reuse-Response: true"
+  ],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "rzheng",
+  "delta_sql": null,
+  "description": "Turner Hylda 1:N case with Header",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": null,
+  "fm_requests": [],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": null,
+  "groups": [
+    "HYLDA",
+    "HYLDA - AdServer",
+    "Monitor - Server Stats"
+  ],
+  "meta_data": null,
+  "metrics": "0",
+  "migrated": false,
+  "mode": "pusher",
+  "name": "HYLDA-ADS-7039-1",
+  "override_header": "X-FW-Reuse-Response: true",
+  "owner": "xmliu",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "HYLDA7039.sql",
+  "start_memcached": true,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2021-09-13 14:57:40 +0000",
+  "wiki": "http://wiki.dev.fwmrm.net/pages/viewpage.action?pageId=78207043"
+}

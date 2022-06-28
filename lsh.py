@@ -2,6 +2,7 @@
 from collections import defaultdict
 from collections import OrderedDict
 import itertools
+from tqdm import tqdm
 
 import xxhash
 

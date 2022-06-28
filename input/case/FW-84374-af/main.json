@@ -1,0 +1,59 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "api_type": "af",
+  "application": "6.47.0",
+  "asset_ack": "5:5",
+  "b_requests": [],
+  "base_file_name": "FW-84374-af.log",
+  "base_sql": "initial-data.sql",
+  "c_requests": [
+    "typeCseq_100_FW-84374.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "zypu",
+  "delta_sql": "FW-84374.od.sql",
+  "description": "Support placement delta load",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": "FW-84374-af_forecast.log",
+  "fm_requests": [],
+  "fn_requests": [],
+  "fo_requests": [
+    {
+      "file": "model-FW-84374_nightly_nightly_bin-FW-84374_typeCseq_100_FW-84374.xml",
+      "network": "31",
+      "placement": "312901"
+    }
+  ],
+  "fserver_conf": "ads-forecast.conf",
+  "groups": [
+    "MRM-Core"
+  ],
+  "meta_data": null,
+  "metrics": "0",
+  "migrated": false,
+  "mode": "pusher",
+  "name": "FW-84374-af",
+  "override_header": "-1",
+  "owner": "zypu",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "FW-84374.sql",
+  "start_memcached": false,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2022-04-11 08:17:07 +0000",
+  "wiki": ""
+}

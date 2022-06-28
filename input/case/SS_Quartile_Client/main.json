@@ -1,0 +1,61 @@
+{
+  "active_asset_list": null,
+  "active_site_section_list": null,
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "api_type": null,
+  "application": "6.3.0",
+  "asset_ack": "5:5",
+  "b_requests": [
+    "INK1788_b1_serverside.xml",
+    "INK1788_b2_clientside.xml",
+    "INK1788_b3_hybrid.xml",
+    "INK1788_b4_dump_callback.xml"
+  ],
+  "base_file_name": "SS_Quartile_Client.log",
+  "base_sql": "initial-data.sql",
+  "c_requests": [],
+  "cmp_resp_headers": [
+    "X-FW-Server-Request"
+  ],
+  "compare_cookies": [
+    "_hls_ph"
+  ],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "sbao",
+  "delta_sql": null,
+  "description": "HLS client side tracking",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": null,
+  "fm_requests": [],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": null,
+  "groups": [
+    "MRM-CORE - Diagnostic",
+    "MRM-CORE - HLS"
+  ],
+  "meta_data": null,
+  "metrics": "0",
+  "migrated": false,
+  "mode": null,
+  "name": "SS_Quartile_Client",
+  "override_header": "-1",
+  "owner": "rcliu",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "INK1788.sql",
+  "start_memcached": false,
+  "status": "inactive",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2020-10-17 11:43:38 +0000",
+  "wiki": "http://wiki.dev.fwmrm.net/x/Rn09B"
+}

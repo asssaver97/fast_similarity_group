@@ -1,0 +1,61 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "api_type": "af",
+  "application": null,
+  "asset_ack": "5:5",
+  "b_requests": [
+    "forecast_cross_device_ingest_to_reqs_0.xml"
+  ],
+  "base_file_name": "forecast_cross_device.log",
+  "base_sql": "forecast_base.sql",
+  "c_requests": [
+    "forecast_cross_device_reseller.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": false,
+  "cookie": "",
+  "creator": "ruiyizhang",
+  "delta_sql": "",
+  "description": "support cross device test",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": "forecast_cross_device_forecast.log",
+  "fm_requests": [
+    {
+      "header": "X-FW-Overrides:Request-Time=1318204800",
+      "user_agent": "freewheel",
+      "xml": "forecast_cross_device_reseller.xml"
+    }
+  ],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": "ads-forecast-migrated.conf",
+  "groups": [
+    "migrated"
+  ],
+  "meta_data": "forecast_cross_device",
+  "metrics": "0",
+  "migrated": true,
+  "mode": "pusher",
+  "name": "forecast_cross_device",
+  "override_header": "-1",
+  "owner": "ruiyizhang",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "forecast",
+  "sql": "forecast_cross_device.sql",
+  "start_memcached": false,
+  "status": "inactive",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2022-04-19 10:00:00 +0000",
+  "wiki": "https://wiki.freewheel.tv/display/ForecastPortal/FW-12568+%5BForecasting+Backend%5D+support+crosss+device+with+tapad+instead+of+dataxu#FW-12568[ForecastingBackend]supportcrosssdevicewithtapadinsteadofdataxu-regressioncase"
+}

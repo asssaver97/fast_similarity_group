@@ -1,0 +1,47 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [],
+  "ads_slot_impression": "",
+  "application": "6.49.1",
+  "asset_ack": "5:5",
+  "b_requests": [
+    ""
+  ],
+  "base_file_name": "FW-99239.log",
+  "base_sql": "initial-mkpl-data.sql",
+  "c_requests": [
+    "typeCseq_100_FW-99239.xml"
+  ],
+  "cmp_resp_headers": [],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "wcyuan",
+  "description": "fix error SLOT_COMPATIBLITY_CHECK",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "groups": [
+    "MKPL-Programmatic"
+  ],
+  "metrics": "0",
+  "mode": "ALL",
+  "name": "FW-99239",
+  "override_header": "-1",
+  "owner": "wcyuan",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "FW-99239.sql",
+  "start_memcached": false,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "migrated": false,
+  "updated_at": "2022-05-19 02:21:53 +0000",
+  "wiki": "https://github.freewheel.tv/core/common/pull/48855"
+}

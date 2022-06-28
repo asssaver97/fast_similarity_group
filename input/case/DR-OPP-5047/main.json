@@ -1,0 +1,67 @@
+{
+  "active_asset_list": "",
+  "active_site_section_list": "",
+  "addon_headers": [
+    "X-FW-Reuse-Response: true"
+  ],
+  "ads_slot_impression": "",
+  "api_type": null,
+  "application": "6.9.0",
+  "asset_ack": "5:5",
+  "b_requests": [
+    "OPP5047_userdb.xml"
+  ],
+  "base_file_name": "DR-OPP-5047.log",
+  "base_sql": "initial-data.sql",
+  "c_requests": [
+    "OPP5047_1.xml",
+    "OPP5047_2.xml",
+    "OPP5047_2_1.xml",
+    "OPP5047_2_2.xml",
+    "OPP5047_3.xml",
+    "OPP5047_4.xml",
+    "OPP5047_5.xml",
+    "OPP5047_6.xml",
+    "OPP5047_7.xml"
+  ],
+  "cmp_resp_headers": [
+    "X-FW-Reuse-Response: true"
+  ],
+  "compare_cookies": [],
+  "compare_response": true,
+  "cookie": "",
+  "creator": "rzheng",
+  "delta_sql": null,
+  "description": "Data rights for audience ",
+  "diagnostic": false,
+  "error_ack": "",
+  "fail_if_validation_error": false,
+  "fbase_file_name": null,
+  "fm_requests": [],
+  "fn_requests": [],
+  "fo_requests": [],
+  "fserver_conf": null,
+  "groups": [
+    "MRM-CORE - Data Right"
+  ],
+  "meta_data": null,
+  "metrics": "0",
+  "migrated": false,
+  "mode": "ALL",
+  "name": "DR-OPP-5047",
+  "override_header": "X-FW-Reuse-Response: true",
+  "owner": "cwang",
+  "quartitle_ack": "",
+  "repeat_cb": "",
+  "result_comment": null,
+  "retry": 1,
+  "server_conf": "adspr.conf",
+  "service": "adserver",
+  "sql": "OPP5047.sql",
+  "start_memcached": false,
+  "status": "active",
+  "to_step": 10,
+  "ua_file": "",
+  "updated_at": "2020-12-11 09:11:02 +0000",
+  "wiki": "http://wiki.dev.fwmrm.net/display/wq/AdServing+Test+OPP-5047+ADS+-+Override+RESTRICT_DATA_VISIBILITY_TO_RESELLERS+functionality+when+specific+audience+configurations+are+used#AdServingTestOPP-5047ADS-OverrideRESTRICTDATAVISIBILITYTORESELLERSfunctionalitywhenspecificaudienceconfigurationsareused-TestData"
+}
