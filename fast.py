@@ -1,3 +1,4 @@
+from enum import unique
 import json
 import os
 import random
@@ -104,6 +105,11 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     OUTPUT
     (list)P: prioritized test suite
     """
+    threshold = 0
+    if minJaccardSimilarty < 1:
+        while float(threshold)/float(threshold+1) < minJaccardSimilarty:
+            threshold += 1
+    print("We count the number of requests less than {} as a small case.".format(threshold))
     maxJaccardDistance = 1 - minJaccardSimilarty
     # number of hash functions
     n = r * b  
@@ -113,6 +119,7 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
 
     # generate feature set of each file
     test_suite, file_name_map = loadTestSuite(input_file, bbox=bbox, k=k) 
+    print("Before group, we heve {} case.".format(len(test_suite)))
     # print(file_name_map)
     # generate minhashes signatures
     mh_t = time.process_time()
@@ -149,8 +156,13 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     tmp_group.append(file_name_map[selected_tc])
     tcs -= set([selected_tc])
     del tcs_minhashes[selected_tc]
-
+    
     while len(tcs_minhashes) > 0:
+        tmpMaxJaccardDistance = maxJaccardDistance
+        n = float(len(test_suite[selected_tc]))
+        if n < threshold:
+            # print("only one")
+            tmpMaxJaccardDistance = n / (n+2)
         min_dist = sys.maxsize
         for candidate in tcs_minhashes:
             dist = lsh.jDistanceEstimate(
@@ -162,57 +174,17 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
         tcs -= set([selected_tc])
         del tcs_minhashes[selected_tc]
         
-        if min_dist > maxJaccardDistance:
+        if min_dist > tmpMaxJaccardDistance:
             group_tcs.append(tmp_group[:])
             tmp_group.clear()
         tmp_group.append(file_name_map[selected_tc])
-
-    # iteration, total = 0, float(len(tcs_minhashes))
-    # while len(tcs_minhashes) > 0:
-    #     iteration += 1
-    #     if iteration % 100 == 0:
-    #         sys.stdout.write("Progress: {}%\r".format(
-    #             round(100*iteration/total, 2)))
-    #         sys.stdout.flush()
-
-    #     if len(tcs_minhashes) < SIZE:
-    #         bucket = lsh.LSHBucket(tcs_minhashes.items(), b, r, n)
-    #         SIZE = int(SIZE*BASE) + 1
-
-    #     sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
-    #                                  b, r, n)
-    #     candidates = sim_cand.difference(prioritized_tcs)
-    #     # candidates = tcs - filtered_sim_cand
-
-    #     if len(candidates) == 0:
-    #         selected_tcs_minhash = lsh.tcMinhashing((0, set()), hashes)
-    #         sim_cand = lsh.LSHCandidates(bucket, (0, selected_tcs_minhash),
-    #                                      b, r, n)
-    #         candidates = sim_cand.difference(prioritized_tcs)
-    #         # candidates = tcs - filtered_sim_cand
-    #         if len(candidates) == 0:
-    #             candidates = tcs_minhashes.keys()
-
-    #     selected_tc, min_dist = random.choice(tuple(candidates)), sys.maxsize
-    #     #for candidate in tcs_minhashes:
-    #     for candidate in candidates:
-    #         dist = lsh.jDistanceEstimate(
-    #             selected_tcs_minhash, tcs_minhashes[candidate])
-    #         if dist < min_dist:
-    #             selected_tc, min_dist = candidate, dist
-
-    #     for i in range(n):
-    #         if tcs_minhashes[selected_tc][i] < selected_tcs_minhash[i]:
-    #             selected_tcs_minhash[i] = tcs_minhashes[selected_tc][i]
-    #     print(file_name_map[selected_tc])
-    #     print(min_dist)
-    #     if min_dist > maxJaccardDistance:
-    #         group_tcs.append(prioritized_tcs_name[:])
-    #         prioritized_tcs_name.clear()
-    #     prioritized_tcs.append(selected_tc)
-    #     prioritized_tcs_name.append(file_name_map[selected_tc])
-    #     tcs -= set([selected_tc])
-    #     del tcs_minhashes[selected_tc]
+        
+        if min_dist < tmpMaxJaccardDistance and tmpMaxJaccardDistance < maxJaccardDistance:
+            print("防止连锁反应")
+            group_tcs.append(tmp_group[:])
+            tmp_group.clear()
+            tmp_group.append(file_name_map[selected_tc])
+            
     group_tcs.append(tmp_group[:])
     ptime = time.process_time() - ptime_start
     print("prioritize time: {}".format(ptime))
