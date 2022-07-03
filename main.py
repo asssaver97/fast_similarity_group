@@ -1,3 +1,4 @@
+from calendar import leapdays
 from collections import defaultdict
 from fileinput import filename
 import sys
@@ -24,14 +25,21 @@ if __name__ == "__main__":
     # filename = "./input/test_suites.txt"
     # save_files(path, filename)
     filename = sys.argv[1]
+    fields=["b_requests","c_requests"]
     minJaccardSimilarty = 0.95
+    regularExpression = "b_requests&c_requests"
     if len(sys.argv) > 2:
-        minJaccardSimilarty = float(sys.argv[2])
-    mh_time, ptime, groups = fast.fast_pw(filename, minJaccardSimilarty, 1, 10, True, 0)
+        regularExpression = sys.argv[2]
+        if len(sys.argv) > 3:
+            minJaccardSimilarty = float(sys.argv[3])
+    mh_time, ptime, groups = fast.fast(filename, regularExpression, minJaccardSimilarty, 1, 20, True, 0)
     # print(mh_time)
     # print(ptime)
+    # print(json.dumps(groups, indent=4, separators=(',', ': '), sort_keys=True))
     i = 0
-    for group in groups:
-        i += 1
-        # print(group)       
-    print("After group, we heve {} case.".format(i))
+    for group in groups.values():
+        i += len(group)
+    print("We can merge {} case.".format(i))
+    outputpath = "./possibleSimilarCases.json"
+    with open(outputpath, "w") as f:
+        json.dump(groups, f, indent=4, separators=(',', ': '), sort_keys=True)

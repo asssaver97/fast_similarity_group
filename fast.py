@@ -1,3 +1,4 @@
+from dataclasses import field
 from enum import unique
 import json
 import os
@@ -12,7 +13,7 @@ from tokenize import group
 import lsh
 
 
-def loadTestSuite(input_file, bbox=True, k=0):
+def loadTestSuite(input_file, fields=["b_requests","c_requests"], bbox=True, k=0):
     """Read the file and prints the feature set of the file
 
     Args:
@@ -24,7 +25,8 @@ def loadTestSuite(input_file, bbox=True, k=0):
         TS (dict): key=tc_ID, val=set(coverd lines)
     """
     TS = defaultdict()
-    FM = dict()
+    FM = defaultdict()
+    owner_map = defaultdict()
     with open(input_file) as fin:
         tcID = 1
         for tc in fin:
@@ -33,12 +35,12 @@ def loadTestSuite(input_file, bbox=True, k=0):
                 if bbox:
                     load_dict = json.load(f)
                     requests = set()
-                    for request in load_dict["b_requests"]:
-                        requests.add("b_requests"+request)
-                    for request in load_dict["c_requests"]:
-                        requests.add("c_requests"+request)
+                    for field in fields:
+                        for request in load_dict[field]:
+                            requests.add(field+request)
                     TS[tcID] = requests
                     FM[tcID] = tc
+                    owner_map[tcID] = load_dict["owner"]
                 # TODO white box
                 else:
                     TS[tcID] = set(tc[:-1].split())
@@ -48,7 +50,7 @@ def loadTestSuite(input_file, bbox=True, k=0):
     TS = OrderedDict(shuffled)
     if bbox:
         TS = lsh.kShingles(TS, k)
-    return TS, FM
+    return TS, FM, owner_map
 
 
 def storeSignatures(input_file, sigfile, hashes, bbox=True, k=0):
@@ -92,9 +94,12 @@ def loadSignatures(input_file):
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+def contains(intput_files):
+    print("to do")
+
 
 # lsh + pairwise comparison with candidate set
-def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
+def fast_pw(input_file, threshold=0, maxJaccardDistance=0.05, fields=["b_requests","c_requests"], group_tcs={},r=1, b=100, bbox=True, k=0):
     """INPUT
     (str)input_file: path of input file
     (int)r: number of rows
@@ -105,12 +110,6 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     OUTPUT
     (list)P: prioritized test suite
     """
-    threshold = 0
-    if minJaccardSimilarty < 1:
-        while float(threshold)/float(threshold+1) < minJaccardSimilarty:
-            threshold += 1
-    print("We count the number of requests less than {} as a small case.".format(threshold))
-    maxJaccardDistance = 1 - minJaccardSimilarty
     # number of hash functions
     n = r * b  
     
@@ -118,13 +117,14 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     hashes = [lsh.hashFamily(i) for i in range(n)] 
 
     # generate feature set of each file
-    test_suite, file_name_map = loadTestSuite(input_file, bbox=bbox, k=k) 
-    print("Before group, we heve {} case.".format(len(test_suite)))
+    test_suite, file_name_map, owner_map = loadTestSuite(input_file, fields=fields, bbox=bbox, k=k) 
+    # print("Before group, we heve {} case.".format(len(test_suite)))
     # print(file_name_map)
     # generate minhashes signatures
     mh_t = time.process_time()
     tcs_minhashes = {tc[0]: lsh.tcMinhashing(tc, hashes)
                         for tc in test_suite.items()}
+    # print(tcs_minhashes)
     mh_time = time.process_time() - mh_t
     #print(json.dumps(tcs_minhashes, sort_keys=True, indent=4, separators=(',', ':')))
     print("minHash time: {}".format(mh_time))
@@ -141,7 +141,7 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     # print(bucket)
 
     # store the results
-    group_tcs = list()
+    # group_tcs = {}
     # prioritized_tcs = [0]
     tmp_group = list()
 
@@ -153,7 +153,8 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
     #     if tcs_minhashes[first_tc][i] < selected_tcs_minhash[i]:
     #         selected_tcs_minhash[i] = tcs_minhashes[first_tc][i]
     # prioritized_tcs.append(first_tc)
-    tmp_group.append(file_name_map[selected_tc])
+    tmp_group.append({"case:": file_name_map[selected_tc], 
+                      "owner:": owner_map[selected_tc]})
     tcs -= set([selected_tc])
     del tcs_minhashes[selected_tc]
     
@@ -162,7 +163,7 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
         n = float(len(test_suite[selected_tc]))
         if n < threshold:
             # print("only one")
-            tmpMaxJaccardDistance = n / (n+2)
+            tmpMaxJaccardDistance = n / (n+1)
         min_dist = sys.maxsize
         for candidate in tcs_minhashes:
             dist = lsh.jDistanceEstimate(
@@ -175,17 +176,54 @@ def fast_pw(input_file, minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
         del tcs_minhashes[selected_tc]
         
         if min_dist > tmpMaxJaccardDistance:
-            group_tcs.append(tmp_group[:])
+            if len(tmp_group) > 1:
+                group_tcs.setdefault(round(last_dist,3),[]).append(tmp_group[:])
             tmp_group.clear()
-        tmp_group.append(file_name_map[selected_tc])
+        tmp_group.append({"case:": file_name_map[selected_tc], 
+                          "owner:": owner_map[selected_tc]})
         
         if min_dist < tmpMaxJaccardDistance and tmpMaxJaccardDistance < maxJaccardDistance:
             print("防止连锁反应")
-            group_tcs.append(tmp_group[:])
+            if len(tmp_group) > 1:
+                group_tcs.setdefault(round(last_dist,3),[]).append(tmp_group[:])
             tmp_group.clear()
-            tmp_group.append(file_name_map[selected_tc])
-            
-    group_tcs.append(tmp_group[:])
+            tmp_group.append({"case:": file_name_map[selected_tc], 
+                            "owner:": owner_map[selected_tc]})
+        last_dist = min_dist
+    if len(tmp_group) > 1:        
+        group_tcs.setdefault(round(last_dist,3),[]).append(tmp_group[:])
     ptime = time.process_time() - ptime_start
     print("prioritize time: {}".format(ptime))
+    return mh_time, ptime, group_tcs
+
+
+def fast(input_file, regularExpression="b_requests&c_requests", minJaccardSimilarty=0.95, r=1, b=100, bbox=True, k=0):
+    threshold = 0
+    if minJaccardSimilarty < 1:
+        while float(threshold)/float(threshold+1) < minJaccardSimilarty:
+            threshold += 1
+    print("We count the number of requests less than {} as a small case.".format(threshold))
+    maxJaccardDistance = 1 - minJaccardSimilarty
+    fields = list()
+    field = ""
+    group_tcs = {}
+    i = 1
+    print("Ragular expression {}:".format(i), end=" ")
+    for c in regularExpression:
+        if c == "&":
+            print(field, end=" & ")
+            fields.append(field)
+            field = ""
+        elif c == "|":
+            print(field)
+            i += 1
+            fields.append(field)
+            field = ""
+            mh_time, ptime, group_tcs=fast_pw(input_file, threshold, maxJaccardDistance,fields,group_tcs,r,b,bbox,k)
+            print("Ragular expression {}:".format(i), end=" ")
+        else:
+            field += c
+    print(field)
+    fields.append(field)
+    mh_time, ptime, group_tcs=fast_pw(input_file, threshold, maxJaccardDistance,fields,group_tcs,r,b,bbox,k)
     return mh_time, ptime, group_tcs
